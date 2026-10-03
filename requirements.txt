@@ -1,0 +1,13 @@
+langchain
+langchain-community
+chromadb
+gitpython
+groq
+langchain-google-genai
+pinecone
+pinecone-text
+python-dotenv
+requests
+tree-sitter
+tree-sitter-javascript
+pydantic

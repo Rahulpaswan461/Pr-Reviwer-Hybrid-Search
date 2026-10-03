@@ -1,0 +1,19 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python virtual environments and generated files
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Local data and generated review input
+chroma_db/
+repositories/test-repo/
+pr.diff
+
+# Editor and operating-system files
+.vscode/
+.DS_Store
