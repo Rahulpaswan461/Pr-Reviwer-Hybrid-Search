@@ -30,7 +30,7 @@ def main():
     try:
         validated = ReviewResult.model_validate(result)
     except Exception as error:
-        validated = fail_closed_result(error)
+        validated = ReviewResult.model_validate(fail_closed_result(error))
 
     if is_github_action:
         post_pr_comment(validated)
