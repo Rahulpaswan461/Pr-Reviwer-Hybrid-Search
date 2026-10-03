@@ -1,14 +1,9 @@
-name: Secure AI PR Reviewer
+name: Secure AI Reviewer Agent
 
 on:
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
-    inputs:
-      pr_number:
-        description: Pull request number to review
-        required: true
-        type: string
 
 permissions:
   contents: read
@@ -17,18 +12,18 @@ permissions:
 jobs:
   review:
     runs-on: ubuntu-latest
+
     env:
-      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-      PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
-      PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME }}
-      PINECONE_NAMESPACE: ${{ github.repository }}
       GH_ACCESS_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
-      PR_NUMBER: ${{ github.event.pull_request.number || inputs.pr_number }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+      PINECONE_INDEX_NAME: ${{ secrets.PINECONE_INDEX_NAME }}
+      GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
 
     steps:
-      - name: Check out repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -39,10 +34,16 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
+      - name: Debug GitHub context
+        run: |
+          echo "REPO=$REPO"
+          echo "PR_NUMBER=$PR_NUMBER"
+          echo "TOKEN_EXISTS=${GH_ACCESS_TOKEN:+yes}"
+
       - name: Fetch pull request diff
         run: |
           curl --fail --silent --show-error --location \
-            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Authorization: Bearer $GH_ACCESS_TOKEN" \
             -H "Accept: application/vnd.github.v3.diff" \
             "https://api.github.com/repos/$REPO/pulls/$PR_NUMBER" \
             -o pr.diff
