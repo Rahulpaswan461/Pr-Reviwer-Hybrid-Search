@@ -34,6 +34,12 @@ jobs:
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
 
+      - name: Debug GitHub context
+        run: |
+          echo "REPO=$REPO"
+          echo "PR_NUMBER=$PR_NUMBER"
+          echo "TOKEN_EXISTS=${GH_ACCESS_TOKEN:+yes}"
+
       - name: Fetch pull request diff
         run: |
           curl --fail --silent --show-error --location \
